@@ -10,6 +10,7 @@ import com.anhembi.a3.models.Evento;
 import dummyData.DummyAtleta;
 import dummyData.DummyEvento;
 import java.awt.event.KeyEvent;
+import java.net.Socket;
 import java.util.ArrayList;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
@@ -142,6 +143,7 @@ public class CadastroBasico extends javax.swing.JFrame {
         btnConEventoAdicionaAtleta = new javax.swing.JButton();
         btnConEventoDeletaAtleta = new javax.swing.JButton();
         ConEventoModalidade = new javax.swing.JComboBox<>();
+        btnConEventoBusca1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(800, 500));
@@ -432,7 +434,7 @@ public class CadastroBasico extends javax.swing.JFrame {
 
         CadEventoModalidade.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " ", "Badminton", "Basquete", "Ciclismo", "Futebol", "Vôlei" }));
 
-        CadEventoData.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.DateFormatter()));
+        CadEventoData.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.DateFormatter(java.text.DateFormat.getDateInstance(java.text.DateFormat.SHORT))));
         CadEventoData.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 CadEventoDataKeyTyped(evt);
@@ -621,6 +623,13 @@ public class CadastroBasico extends javax.swing.JFrame {
 
         ConEventoModalidade.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " ", "Badminton", "Basquete", "Ciclismo", "Futebol", "Vôlei" }));
 
+        btnConEventoBusca1.setText("Abrir Chat");
+        btnConEventoBusca1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnConEventoBusca1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -661,7 +670,8 @@ public class CadastroBasico extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(btnConEventoBusca, javax.swing.GroupLayout.DEFAULT_SIZE, 108, Short.MAX_VALUE)
-                            .addComponent(btnConEventoDeletaAtleta, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(btnConEventoDeletaAtleta, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnConEventoBusca1, javax.swing.GroupLayout.DEFAULT_SIZE, 108, Short.MAX_VALUE))
                         .addGap(34, 34, 34))))
         );
         jPanel4Layout.setVerticalGroup(
@@ -675,7 +685,8 @@ public class CadastroBasico extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel21)
-                    .addComponent(ConEventoNome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(ConEventoNome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnConEventoBusca1))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel22)
@@ -695,7 +706,7 @@ public class CadastroBasico extends javax.swing.JFrame {
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnConAtualizaEvento)
                     .addComponent(btnConDeletaEvento))
-                .addContainerGap(26, Short.MAX_VALUE))
+                .addContainerGap(24, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Eventos", jPanel4);
@@ -1351,6 +1362,38 @@ public class CadastroBasico extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnConEventoDeletaAtletaActionPerformed
 
+    private void btnConEventoBusca1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConEventoBusca1ActionPerformed
+        // TODO add your handling code here:
+        if (ConEventoID.getText().isEmpty()){
+            JOptionPane.showMessageDialog(rootPane, "Selecione um evento", "Atenção", JOptionPane.ERROR_MESSAGE);
+        } else {
+            String nome = JOptionPane.showInputDialog(rootPane, "Insira o seu nome:");
+
+            boolean isChatEventoAtivo = getChatEventoAtivo();
+            
+            if (isChatEventoAtivo){
+                ChatCliente cliente = new ChatCliente(ConEventoID.getText(), ConEventoNome.getText(), nome);
+                cliente.setVisible(true);
+  
+            } else {
+                ChatServidor servidor = new ChatServidor(ConEventoID.getText(), ConEventoNome.getText(), nome);
+                servidor.setVisible(true);
+            }
+        }
+    }//GEN-LAST:event_btnConEventoBusca1ActionPerformed
+    
+    private boolean getChatEventoAtivo(){
+        try{
+            Socket socket;
+            int portaEvento = 9000 + Integer.parseInt(ConEventoID.getText());
+            socket = new Socket("127.0.0.1", portaEvento);
+            socket.close();
+            return true;
+        } catch (Exception e){
+            return false;
+        }
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -1419,6 +1462,7 @@ public class CadastroBasico extends javax.swing.JFrame {
     private javax.swing.JButton btnConDeletaEvento;
     private javax.swing.JButton btnConEventoAdicionaAtleta;
     private javax.swing.JButton btnConEventoBusca;
+    private javax.swing.JButton btnConEventoBusca1;
     private javax.swing.JButton btnConEventoDeletaAtleta;
     private javax.swing.JButton btnEventoCria;
     private javax.swing.JButton btnProcurar;

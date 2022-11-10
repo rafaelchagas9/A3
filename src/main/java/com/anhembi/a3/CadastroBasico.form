@@ -564,7 +564,7 @@
             <Component class="javax.swing.JFormattedTextField" name="CadEventoData">
               <Properties>
                 <Property name="formatterFactory" type="javax.swing.JFormattedTextField$AbstractFormatterFactory" editor="org.netbeans.modules.form.editors.AbstractFormatterFactoryEditor">
-                  <Format subtype="0" type="1"/>
+                  <Format subtype="1" type="1"/>
                 </Property>
               </Properties>
               <Events>
@@ -699,6 +699,7 @@
                               <Group type="103" groupAlignment="0" max="-2" attributes="0">
                                   <Component id="btnConEventoBusca" pref="108" max="32767" attributes="0"/>
                                   <Component id="btnConEventoDeletaAtleta" max="32767" attributes="0"/>
+                                  <Component id="btnConEventoBusca1" alignment="0" pref="108" max="32767" attributes="0"/>
                               </Group>
                               <EmptySpace min="-2" pref="34" max="-2" attributes="0"/>
                           </Group>
@@ -719,6 +720,7 @@
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="jLabel21" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="ConEventoNome" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="btnConEventoBusca1" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
@@ -743,7 +745,7 @@
                           <Component id="btnConAtualizaEvento" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="btnConDeletaEvento" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace pref="26" max="32767" attributes="0"/>
+                      <EmptySpace pref="24" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -865,6 +867,14 @@
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
               </AuxValues>
+            </Component>
+            <Component class="javax.swing.JButton" name="btnConEventoBusca1">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Abrir Chat"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnConEventoBusca1ActionPerformed"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>
