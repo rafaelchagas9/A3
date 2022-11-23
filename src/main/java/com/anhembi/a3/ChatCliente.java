@@ -4,18 +4,11 @@
  */
 package com.anhembi.a3;
 
-import com.anhembi.a3.Threads.Servidor;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.InputStream;
-import static java.lang.Thread.sleep;
-import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
 import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 
@@ -66,17 +59,15 @@ public class ChatCliente extends javax.swing.JFrame {
                     @Override
                     protected Void doInBackground() throws Exception {
                         DataInputStream din = new DataInputStream(servidor.getInputStream());
-                        DataOutputStream dout = new DataOutputStream(servidor.getOutputStream());
+
                         while (true) {
                             try {
-                                
                                 System.out.println("Cliente: GAR");
 
                                 chatBox.append(din.readUTF());
                             } catch (Exception e) {
                                 System.out.println("Cliente: Sem novas mensagens");
                             }
-                            sleep(1100);
                         }
 
                     }
@@ -226,13 +217,14 @@ public class ChatCliente extends javax.swing.JFrame {
         // TODO add your handling code here:
         try {
 
-                DataOutputStream dout = new DataOutputStream(servidor.getOutputStream());
+            DataOutputStream dout = new DataOutputStream(servidor.getOutputStream());
 
-                dout.writeUTF("\n" + nomeUsuario + ": " + jTextArea1.getText());
-                    jTextArea1.setText("");
+            dout.writeUTF("\n" + nomeUsuario + ": " + jTextArea1.getText());
+            dout.flush();
+            jTextArea1.setText("");
 
         } catch (Exception e) {
-            System.out.println("Falha ao enviar a mensagem"+e.getMessage());
+            System.out.println("Falha ao enviar a mensagem" + e.getMessage());
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 

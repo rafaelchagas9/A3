@@ -8,9 +8,14 @@ package com.anhembi.a3.Threads;
  *
  * @author TheBl
  */
-public class Cliente extends Thread{
+public class Cliente implements Runnable{
     
     public Cliente(){
+        
+    }
+
+    @Override
+    public void run() {
         
     }
     

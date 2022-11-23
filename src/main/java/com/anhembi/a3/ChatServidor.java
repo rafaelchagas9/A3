@@ -10,13 +10,15 @@ import java.awt.event.WindowListener;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.InputStream;
-import static java.lang.Thread.sleep;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import javax.swing.SwingWorker;
+import java.lang.*;
 
 /**
  *
@@ -25,14 +27,14 @@ import javax.swing.SwingWorker;
 public class ChatServidor extends javax.swing.JFrame {
 
     String nomeUsuario;
-    Servidor servidor;
     int porta;
-    List<Socket> clientes = new ArrayList<Socket>();
+    List<Socket> clientes;
 
     /**
      * Creates new form ChatServidor
      */
     public ChatServidor(String idEvento, String nomeEvento, String nomeUsuario) {
+        this.clientes = new ArrayList<>();
         initComponents();
 
         txtFieldID.setText(idEvento);
@@ -54,26 +56,31 @@ public class ChatServidor extends javax.swing.JFrame {
             public void windowOpened(WindowEvent e) {
                 System.out.println("Aguardando conexão...");
 
-                SwingWorker<Void, String> Worker = new SwingWorker<Void, String>() {
+                SwingWorker<Void, String> realizarConexaoWorker = new SwingWorker<Void, String>() {
                     @Override
                     protected Void doInBackground() throws Exception {
-                        ServerSocket serverSocket;
+                        ServerSocket serverSocket = new ServerSocket();
+                        serverSocket = new ServerSocket(porta);
 
                         try {
-                            serverSocket = new ServerSocket(porta);
-                            while (true) {
-                                Socket clientSocket;
-                                InputStream input;
-                                Scanner entrada;
+                            boolean flagAddClient = false;
+
+                            while (!serverSocket.isClosed()) {
+                                Socket clientSocket = new Socket();
 
                                 try {
-                                    System.out.println("Aguardando o cliente...");
+                                    System.out.println("Servidor: Aguardando o cliente...");
                                     clientSocket = serverSocket.accept();
-                                    clientes.add(clientSocket);
+
+                                    if (flagAddClient) {
+                                        clientes.add(clientSocket);
+
+                                    }
+                                    flagAddClient = !flagAddClient;
+
                                 } catch (Exception e) {
-                                    System.out.println("Erro na conexão");
+                                    System.out.println("Servidor: Erro na conexão");
                                 }
-                                // faz o processo de Bind
 
                             }
                         } catch (Exception e) {
@@ -88,25 +95,31 @@ public class ChatServidor extends javax.swing.JFrame {
                     protected Void doInBackground() throws Exception {
                         while (true) {
                             try {
-                                                                
 
                                 for (Socket cliente : clientes) {
                                     System.out.println("Servidor: Cliente");
-                                    DataInputStream din = new DataInputStream(cliente.getInputStream());
-                                    DataOutputStream dout = new DataOutputStream(cliente.getOutputStream());
 
-                                    chatBox.append(din.readUTF());
+                                    DataInputStream din = new DataInputStream(cliente.getInputStream());
+
+                                    String message = din.readUTF();
+
+                                    for (Socket clienteEnvio : clientes) {
+                                        DataOutputStream dout = new DataOutputStream(clienteEnvio.getOutputStream());
+                                        dout.writeUTF(message);
+
+                                    }
+
+                                    chatBox.append(message);
 
                                 }
                             } catch (Exception e) {
                                 System.out.println("Servidor: Sem novas mensagens");
                             }
-                            sleep(1000);
                         }
 
                     }
                 };
-                Worker.execute();
+                realizarConexaoWorker.execute();
                 recebeMensagemWorker.execute();
             }
 
@@ -250,16 +263,20 @@ public class ChatServidor extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
+        boolean sucesso = false;
         for (Socket cliente : clientes) {
             try {
-
                 DataOutputStream dout = new DataOutputStream(cliente.getOutputStream());
 
                 dout.writeUTF("\n" + nomeUsuario + ": " + jTextArea1.getText());
+                sucesso = true;
 
             } catch (Exception e) {
-                System.out.println("Falha ao enviar a mensagem" + e.getMessage());
+                System.out.println("Falha ao enviar mensagem");
             }
+        }
+        if (sucesso) {
+            chatBox.append("\n" + nomeUsuario + ": " + jTextArea1.getText());
         }
         jTextArea1.setText("");
 
